@@ -1,14 +1,15 @@
 import Image from "next/image";
 
+import BarbershopItem from "@/components/ui/barbershop-item";
 import BookingItem from "@/components/ui/booking-item";
 import Header from "@/components/ui/header";
-import { prisma } from "@/lib/prisma";
+import { getBarbershops } from "@/data/barbershops";
 import banner from "@/public/banner.png";
 
 // Server Component
 
 export default async function Home() {
-  const barbershops = await prisma.barbershop.findMany();
+  const barbershops = await getBarbershops();
 
   return (
     <div>
@@ -22,17 +23,15 @@ export default async function Home() {
         />
       </div>
 
-      <div className="mt-4 px-4 space-y-4">
+      <div className="mt-4 space-y-4 px-4">
         <h3 className="text-xs font-bold uppercase">Agendedametos</h3>
         <BookingItem />
       </div>
-      {barbershops.map((barbershop) => (
-        <div key={barbershop.id}>
-          <h3 className="">{barbershop.name}</h3>
-        </div>
-      ))}
+      <div className="flex gap-4 overflow-x-auto">
+        {barbershops?.map((barbershop) => (
+          <BarbershopItem key={barbershop.id} barbershop={barbershop} />
+        )) ?? []}
+      </div>
     </div>
   );
 }
-
-
